@@ -2,46 +2,36 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Banana Auto-Play</title>
+    <title>Banana Instantâneo</title>
     <style>
-        body {
-            background-color: #111;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-        p { font-size: 1.2em; opacity: 0.6; }
+        body { background: #000; margin: 0; overflow: hidden; }
     </style>
 </head>
 <body>
 
-    <p>O som deve começar automaticamente...</p>
-
-    <audio id="meuAudio" loop>
+    <audio id="audio" autoplay loop>
         <source src="banana.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        const audio = document.getElementById('meuAudio');
-
-        // Função para tentar dar o play
-        const playAudio = () => {
-            audio.play().catch(err => {
-                console.log("Aguardando interação para tocar...");
+        const audio = document.getElementById('audio');
+        
+        // Tenta forçar o play a cada 100ms até que o navegador permita
+        const forcePlay = setInterval(() => {
+            audio.play().then(() => {
+                // Se conseguir tocar, limpa o intervalo
+                clearInterval(forcePlay);
+                console.log("Tocando!");
+            }).catch(err => {
+                console.log("Navegador bloqueando... tentando novamente.");
             });
-        };
+        }, 100);
 
-        // Tenta tocar assim que o script carregar
-        playAudio();
-
-        // Se o navegador bloquear, ele toca no primeiro clique do usuário na tela
-        window.addEventListener('click', () => {
-            playAudio();
-        }, { once: true }); // O '{ once: true }' faz o evento rodar só uma vez
+        // Se o autoplay for bloqueado de qualquer forma, 
+        // qualquer movimento do mouse ou tecla vai disparar o som
+        window.onclick = () => audio.play();
+        window.onmousemove = () => audio.play();
+        window.onkeydown = () => audio.play();
     </script>
 
 </body>

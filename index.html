@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presente Especial</title>
+    <style>
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            /* O arquivo tom.png deve estar na mesma pasta */
+            background: url('tom.png') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        /* Container Principal com efeito de vidro */
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 40px; 
+            border-radius: 15px;
+            width: 90%; 
+            max-width: 500px;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+
+        h1 { 
+            text-transform: uppercase; 
+            letter-spacing: 5px; 
+            margin-bottom: 10px;
+            font-size: 3rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .subtitulo {
+            font-size: 0.9rem;
+            color: #ddd;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
+
+        .botao-playlist {
+            background: #fff; 
+            color: #000; 
+            border: none;
+            padding: 15px 30px; 
+            font-weight: bold; 
+            cursor: pointer;
+            width: 100%; 
+            text-transform: uppercase;
+            transition: 0.3s;
+            border-radius: 5px;
+        }
+
+        .botao-playlist:hover {
+            background: #e0e0e0;
+            transform: scale(1.02);
+        }
+
+        /* Itens da Playlist */
+        .musica-item {
+            background: rgba(0,0,0,0.7);
+            margin: 10px 0; 
+            padding: 20px;
+            cursor: pointer; 
+            border-radius: 8px;
+            transition: 0.3s;
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            border-left: 4px solid #fff;
+        }
+
+        .musica-item:hover { 
+            background: rgba(255,255,255,0.2); 
+            padding-left: 30px;
+        }
+
+        /* Controle de Volume */
+        #controle-volume {
+            display: none; 
+            margin-top: 20px;
+            padding: 20px; 
+            background: rgba(0,0,0,0.85);
+            border-radius: 10px;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        label { display: block; margin-bottom: 10px; font-weight: bold; }
+
+        input[type=range] { 
+            width: 100%; 
+            cursor: pointer; 
+            margin: 15px 0; 
+            accent-color: #fff;
+        }
+
+        .hidden { display: none; }
+
+        footer {
+            margin-top: 30px;
+            font-size: 0.7rem;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>29.05</h1>
+        <p class="subtitulo">ESPECIAL PARA VOCÊ</p>
+
+        <div id="sessao-inicial">
+            <button class="botao-playlist" onclick="mostrarPlaylist()">PLAYLIST</button>
+        </div>
+
+        <div id="lista-musicas" class="hidden">
+            <div class="musica-item" onclick="prepararMusica('lebre.mp3', 'Lebre onde você escondeu seus filhotes')">
+                ✦ Lebre onde você escondeu seus filhotes
+            </div>
+            <div class="musica-item" onclick="prepararMusica('peso.mp3', 'Ela é um preço morto')">
+                ✦ Ela é um preço morto
+            </div>
+        </div>
+
+        <div id="controle-volume">
+            <p id="nome-musica-ativa" style="font-weight: bold; color: #fff; margin-bottom: 15px;"></p>
+            <label>QUAL VOLUME? (1 a 100)</label>
+            <input type="range" id="volume-slider" min="1" max="100" value="50">
+            <p><span id="val-volume">50</span>%</p>
+            <button class="botao-playlist" onclick="tocarAgora()">DAR PLAY</button>
+        </div>
+
+        <footer>#TOMKAULITZ #FNAF #KAMAITACHI</footer>
+    </div>
+
+    <audio id="player-audio"></audio>
+
+    <script>
+        const player = document.getElementById('player-audio');
+        const slider = document.getElementById('volume-slider');
+        const valVolume = document.getElementById('val-volume');
+        let arquivoParaTocar = "";
+
+        function mostrarPlaylist() {
+            document.getElementById('sessao-inicial').classList.add('hidden');
+            document.getElementById('lista-musicas').classList.remove('hidden');
+        }
+
+        function prepararMusica(arquivo, nome) {
+            arquivoParaTocar = arquivo;
+            document.getElementById('lista-musicas').classList.add('hidden');
+            document.getElementById('controle-volume').style.display = 'block';
+            document.getElementById('nome-musica-ativa').innerText = "Música: " + nome;
+        }
+
+        // Atualiza o texto do volume enquanto arrasta
+        slider.oninput = function() {
+            valVolume.innerHTML = this.value;
+        }
+
+        function tocarAgora() {
+            if(arquivoParaTocar !== "") {
+                player.src = arquivoParaTocar;
+                player.volume = slider.value / 100;
+                player.play().catch(e => {
+                    alert("Erro ao carregar o arquivo. Verifique se lebre.mp3 e peso.mp3 estão na pasta certa!");
+                });
+                alert("Tocando com volume em " + slider.value + "%! Aproveite.");
+            }
+        }
+    </script>
+</body>
+</html>

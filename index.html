@@ -2,56 +2,46 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Banana Player</title>
+    <title>Banana Auto-Play</title>
     <style>
         body {
+            background-color: #111;
+            color: white;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f0f0f0;
-            font-family: sans-serif;
+            margin: 0;
+            font-family: Arial, sans-serif;
         }
-        .play-btn {
-            padding: 20px 40px;
-            font-size: 20px;
-            cursor: pointer;
-            background: #ffe135;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px #ccb52d;
-        }
+        p { font-size: 1.2em; opacity: 0.6; }
     </style>
 </head>
 <body>
 
-    <button class="play-btn" id="btn">Clique para iniciar</button>
+    <p>O som deve começar automaticamente...</p>
 
     <audio id="meuAudio" loop>
         <source src="banana.mp3" type="audio/mpeg">
-        Seu navegador não suporta áudio HTML5.
     </audio>
 
     <script>
         const audio = document.getElementById('meuAudio');
-        const btn = document.getElementById('btn');
 
-        // Tenta tocar assim que carregar
-        window.addEventListener('load', () => {
-            audio.play().then(() => {
-                // Se funcionar sozinho, removemos o botão
-                btn.style.display = 'none';
-            }).catch(error => {
-                console.log("Autoplay bloqueado. Aguardando interação do usuário.");
+        // Função para tentar dar o play
+        const playAudio = () => {
+            audio.play().catch(err => {
+                console.log("Aguardando interação para tocar...");
             });
-        });
+        };
 
-        // Caso o autoplay falhe, o clique do usuário inicia o som
-        btn.addEventListener('click', () => {
-            audio.play();
-            btn.innerText = "Tocando...";
-            btn.style.opacity = "0.5";
-        });
+        // Tenta tocar assim que o script carregar
+        playAudio();
+
+        // Se o navegador bloquear, ele toca no primeiro clique do usuário na tela
+        window.addEventListener('click', () => {
+            playAudio();
+        }, { once: true }); // O '{ once: true }' faz o evento rodar só uma vez
     </script>
 
 </body>
